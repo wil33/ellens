@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financial Status</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='construction.css') }}">
+</head>
+<body>
+    <div class="meme-container">
+        <img src="{{ url_for('static', filename='images/under-construction-meme.jpg') }}" alt="Under Construction Meme" class="meme-image">
+        <div class="overlay-text">UNDER CONSTRUCTION</div>
+    </div>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+</html>
