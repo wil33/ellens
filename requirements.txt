@@ -4,6 +4,6 @@ Flask-Login==0.6.3
 python-dotenv==1.0.1
 pandas==2.2.1
 matplotlib==3.8.3
-squareup==35.1.0.20240222
+squareup==38.2.0.20241017
 gunicorn==21.2.0
 psycopg2-binary==2.9.9
