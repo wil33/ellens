@@ -77,10 +77,8 @@
                         <h5 class="card-title">Add Subcomponent</h5>
                         <form action="{{ url_for('add_subcomponent', item_id=item.id) }}" method="POST" class="mb-3">
                             <div class="input-group">
-                                <input type="text" class="form-control" id="subcomponent_search" 
-                                       placeholder="Search for items..." autocomplete="off">
                                 <select class="form-select" name="subcomponent_id" id="subcomponent_select" required>
-                                    <option value="">Select an item</option>
+                                    <option value="">Search or select an item...</option>
                                 </select>
                                 <input type="number" class="form-control" name="quantity" 
                                        placeholder="Quantity" step="0.01" required>
@@ -134,21 +132,52 @@
 
 <!-- Add this JavaScript at the bottom of the file -->
 <script>
-document.getElementById('subcomponent_search').addEventListener('input', function(e) {
-    const searchTerm = e.target.value;
-    if (searchTerm.length < 2) return;
+document.addEventListener('DOMContentLoaded', function() {
+    const select = document.getElementById('subcomponent_select');
+    
+    // Initialize Select2
+    $(select).select2({
+        placeholder: 'Search or select an item...',
+        minimumInputLength: 0,  // Allow showing all items
+        ajax: {
+            url: '{{ url_for("search_items") }}',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term || '', // search term, empty string when no input
+                    page: params.page || 1
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data.map(item => ({
+                        id: item.id,
+                        text: `${item.name} (Stock: ${item.stock})`
+                    }))
+                };
+            },
+            cache: true
+        }
+    });
 
-    fetch(`{{ url_for('search_items') }}?q=${searchTerm}`)
+    // Load initial items
+    fetch('{{ url_for("search_items") }}?q=')
         .then(response => response.json())
         .then(data => {
-            const select = document.getElementById('subcomponent_select');
-            select.innerHTML = '<option value="">Select an item</option>';
-            data.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.id;
-                option.textContent = `${item.name} (Stock: ${item.stock})`;
-                select.appendChild(option);
+            const initialOptions = data.map(item => ({
+                id: item.id,
+                text: `${item.name} (Stock: ${item.stock})`
+            }));
+            
+            // Add initial options to select
+            initialOptions.forEach(option => {
+                const newOption = new Option(option.text, option.id, false, false);
+                $(select).append(newOption);
             });
+            
+            // Trigger change to update Select2
+            $(select).trigger('change');
         });
 });
 </script>
