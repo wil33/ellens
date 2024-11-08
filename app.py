@@ -600,14 +600,17 @@ with app.app_context():
 @app.route('/search_items')
 def search_items():
     q = request.args.get('q', '')
-    if len(q) < 2:
-        return jsonify([])
     
-    # Search for items excluding the current item
-    items = InventoryItem.query.filter(
-        InventoryItem.name.ilike(f'%{q}%'),
+    # Base query excluding the current item
+    query = InventoryItem.query.filter(
         InventoryItem.id != request.args.get('current_item_id', 0)
-    ).all()
+    )
+    
+    # If there's a search term, filter by it
+    if q:
+        query = query.filter(InventoryItem.name.ilike(f'%{q}%'))
+    
+    items = query.all()
     
     return jsonify([{
         'id': item.id,
