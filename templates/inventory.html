@@ -29,11 +29,46 @@
         <table class="table table-striped">
             <thead style="position: sticky; top: 0; background: white; z-index: 1;">
                 <tr>
-                    <th>Name</th>
-                    <th>Current Stock</th>
-                    <th>Reorder Threshold</th>
-                    <th>Reorder Quantity</th>
-                    <th>Supplier</th>
+                    <th>
+                        <a href="{{ url_for('inventory', search=search_query, sort='name', direction='asc' if request.args.get('sort') != 'name' or request.args.get('direction') == 'desc' else 'desc') }}" class="text-dark text-decoration-none">
+                            Name
+                            {% if request.args.get('sort') == 'name' %}
+                                {% if request.args.get('direction') == 'asc' %}↑{% else %}↓{% endif %}
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventory', search=search_query, sort='stock', direction='asc' if request.args.get('sort') != 'stock' or request.args.get('direction') == 'desc' else 'desc') }}" class="text-dark text-decoration-none">
+                            Current Stock
+                            {% if request.args.get('sort') == 'stock' %}
+                                {% if request.args.get('direction') == 'asc' %}↑{% else %}↓{% endif %}
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventory', search=search_query, sort='reorder_threshold', direction='asc' if request.args.get('sort') != 'reorder_threshold' or request.args.get('direction') == 'desc' else 'desc') }}" class="text-dark text-decoration-none">
+                            Reorder Threshold
+                            {% if request.args.get('sort') == 'reorder_threshold' %}
+                                {% if request.args.get('direction') == 'asc' %}↑{% else %}↓{% endif %}
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventory', search=search_query, sort='reorder_quantity', direction='asc' if request.args.get('sort') != 'reorder_quantity' or request.args.get('direction') == 'desc' else 'desc') }}" class="text-dark text-decoration-none">
+                            Reorder Quantity
+                            {% if request.args.get('sort') == 'reorder_quantity' %}
+                                {% if request.args.get('direction') == 'asc' %}↑{% else %}↓{% endif %}
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventory', search=search_query, sort='supplier', direction='asc' if request.args.get('sort') != 'supplier' or request.args.get('direction') == 'desc' else 'desc') }}" class="text-dark text-decoration-none">
+                            Supplier
+                            {% if request.args.get('sort') == 'supplier' %}
+                                {% if request.args.get('direction') == 'asc' %}↑{% else %}↓{% endif %}
+                            {% endif %}
+                        </a>
+                    </th>
                 </tr>
             </thead>
             <tbody>

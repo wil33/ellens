@@ -126,10 +126,27 @@ def load_user(user_id):
 @login_required
 def index():
     search_query = request.args.get('search', '')
+    sort = request.args.get('sort', 'name')
+    direction = request.args.get('direction', 'asc')
+    
+    # Start with base query for low stock items
     low_stock_items = InventoryItem.query.filter(InventoryItem.stock <= InventoryItem.reorder_threshold)
     
+    # Apply search filter if exists
     if search_query:
         low_stock_items = low_stock_items.filter(InventoryItem.name.ilike(f'%{search_query}%'))
+    
+    # Apply sorting
+    if sort == 'name':
+        low_stock_items = low_stock_items.order_by(InventoryItem.name.asc() if direction == 'asc' else InventoryItem.name.desc())
+    elif sort == 'stock':
+        low_stock_items = low_stock_items.order_by(InventoryItem.stock.asc() if direction == 'asc' else InventoryItem.stock.desc())
+    elif sort == 'reorder_threshold':
+        low_stock_items = low_stock_items.order_by(InventoryItem.reorder_threshold.asc() if direction == 'asc' else InventoryItem.reorder_threshold.desc())
+    elif sort == 'reorder_quantity':
+        low_stock_items = low_stock_items.order_by(InventoryItem.reorder_quantity.asc() if direction == 'asc' else InventoryItem.reorder_quantity.desc())
+    elif sort == 'supplier':
+        low_stock_items = low_stock_items.order_by(InventoryItem.supplier.asc() if direction == 'asc' else InventoryItem.supplier.desc())
     
     low_stock_items = low_stock_items.all()
     return render_template('index.html', low_stock_items=low_stock_items, search_query=search_query)
@@ -138,10 +155,27 @@ def index():
 @login_required
 def inventory():
     search_query = request.args.get('search', '')
+    sort = request.args.get('sort', 'name')  # Default sort by name
+    direction = request.args.get('direction', 'asc')  # Default ascending
+    
+    # Start with base query
     items = InventoryItem.query
-
+    
+    # Apply search filter if exists
     if search_query:
         items = items.filter(InventoryItem.name.ilike(f'%{search_query}%'))
+    
+    # Apply sorting
+    if sort == 'name':
+        items = items.order_by(InventoryItem.name.asc() if direction == 'asc' else InventoryItem.name.desc())
+    elif sort == 'stock':
+        items = items.order_by(InventoryItem.stock.asc() if direction == 'asc' else InventoryItem.stock.desc())
+    elif sort == 'reorder_threshold':
+        items = items.order_by(InventoryItem.reorder_threshold.asc() if direction == 'asc' else InventoryItem.reorder_threshold.desc())
+    elif sort == 'reorder_quantity':
+        items = items.order_by(InventoryItem.reorder_quantity.asc() if direction == 'asc' else InventoryItem.reorder_quantity.desc())
+    elif sort == 'supplier':
+        items = items.order_by(InventoryItem.supplier.asc() if direction == 'asc' else InventoryItem.supplier.desc())
     
     items = items.all()
     return render_template('inventory.html', items=items, search_query=search_query)
