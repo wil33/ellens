@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize Select2
     $(select).select2({
         placeholder: 'Search or select an item...',
-        minimumInputLength: 0,  // Allow showing all items
+        minimumInputLength: 0,  // Changed from default/2 to 0
         ajax: {
             url: '{{ url_for("search_items") }}',
             dataType: 'json',
@@ -160,25 +160,10 @@ document.addEventListener('DOMContentLoaded', function() {
             cache: true
         }
     });
-
-    // Load initial items
-    fetch('{{ url_for("search_items") }}?q=')
-        .then(response => response.json())
-        .then(data => {
-            const initialOptions = data.map(item => ({
-                id: item.id,
-                text: `${item.name} (Stock: ${item.stock})`
-            }));
-            
-            // Add initial options to select
-            initialOptions.forEach(option => {
-                const newOption = new Option(option.text, option.id, false, false);
-                $(select).append(newOption);
-            });
-            
-            // Trigger change to update Select2
-            $(select).trigger('change');
-        });
+    
+    // Trigger initial load immediately after initialization
+    $(select).select2('open');
+    $(select).select2('close');
 });
 </script>
 
